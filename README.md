@@ -1,3 +1,5 @@
+Leer como CODE para mas comodidad.
+
 La idea del proyecto es un gestor de departamentos temporarios. Este tendra que poder:
 ⚫Crear un usuario
 ⚫Iniciar sesion
