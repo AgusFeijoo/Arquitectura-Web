@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar Departamentos - 679INN</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Administrar Departamentos</h1>
+        <button onclick="location.href='inicio.html'">Volver</button>
+    </header>
+
+    <div id="departamentos-container"></div>
+
+    <form id="crear-departamento-form">
+        <label for="nombreDepartamento">Nombre del Departamento:</label>
+        <input type="text" id="nombreDepartamento" required>
+        <button type="submit">Crear Departamento</button>
+    </form>
+
+    <script>
+        async function cargarDepartamentos() {
+            const response = await fetch('/api/departamentos');
+            const departamentos = await response.json();
+            const container = document.getElementById('departamentos-container');
+            container.innerHTML = '';
+
+            departamentos.forEach(departamento => {
+                const div = document.createElement('div');
+                div.innerText = departamento.name;
+
+                // Botón para eliminar departamento con confirmación
+                const eliminarBtn = document.createElement('button');
+                eliminarBtn.innerText = 'Eliminar';
+                eliminarBtn.onclick = async () => {
+                    const confirmacion = confirm('¿Estás seguro de que deseas eliminar este departamento?');
+                    if (confirmacion) {
+                        await fetch(`/api/departamentos/${departamento.id}`, { method: 'DELETE' });
+                        alert('Departamento eliminado exitosamente');
+                        cargarDepartamentos(); // Recargar departamentos después de eliminar
+                    }
+                };
+
+                div.appendChild(eliminarBtn);
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('crear-departamento-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const departamento = {
+                name: document.getElementById('nombreDepartamento').value
+            };
+
+            await fetch('/api/departamentos', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(departamento)
+            });
+
+            alert('Departamento creado exitosamente');
+            cargarDepartamentos(); // Recargar lista de departamentos
+        };
+
+        window.onload = cargarDepartamentos;
+    </script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio - 679INN</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .month-selector {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <header style="display: flex; align-items: center; padding: 10px;">
+        <h1 style="margin: 0;">679INN - Departamentos</h1>
+    </header>
+
+    <h2>Opciones</h2>
+    <button onclick="location.href='crear_reserva.html'">Crear Reserva</button>
+    <button onclick="location.href='mis_reservas.html'">Mis Reservas</button>
+    <button onclick="location.href='administrar_departamentos.html'">Administrar Departamentos</button>
+
+    <div class="month-selector">
+        <label for="year">Selecciona el año: </label>
+        <select id="year"></select>
+        <label for="month">Selecciona el mes: </label>
+        <select id="month">
+            <option value="0">Enero</option>
+            <option value="1">Febrero</option>
+            <option value="2">Marzo</option>
+            <option value="3">Abril</option>
+            <option value="4">Mayo</option>
+            <option value="5">Junio</option>
+            <option value="6">Julio</option>
+            <option value="7">Agosto</option>
+            <option value="8">Septiembre</option>
+            <option value="9">Octubre</option>
+            <option value="10">Noviembre</option>
+            <option value="11">Diciembre</option>
+        </select>
+    </div>
+
+    <script>
+        // Función para cargar años en el selector
+        function cargarAnios() {
+            const yearSelect = document.getElementById('year');
+            const currentYear = new Date().getFullYear();
+            for (let i = currentYear - 5; i <= currentYear + 5; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i;
+                yearSelect.appendChild(option);
+            }
+            yearSelect.value = currentYear;
+        }
+
+        window.onload = () => {
+            cargarAnios();
+        };
+    </script>
+</body>
+</html>

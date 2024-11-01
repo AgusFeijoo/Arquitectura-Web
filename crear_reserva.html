@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Reserva - 679INN</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Crear Reserva</h1>
+    </header>
+
+    <form id="reserva-form">
+        <label for="nombre">Nombre:</label>
+        <input type="text" id="nombre" required>
+
+        <label for="departamentoId">Departamento:</label>
+        <select id="departamentoId" required>
+            <!-- Aquí se llenarán los departamentos -->
+        </select>
+
+        <label for="fechaInicio">Fecha de Inicio:</label>
+        <input type="date" id="fechaInicio" required>
+
+        <label for="fechaFin">Fecha de Fin:</label>
+        <input type="date" id="fechaFin" required>
+
+        <label for="valorPorNoche">Valor por Noche:</label>
+        <input type="number" id="valorPorNoche" required>
+
+        <h3 id="precioTotal">Precio Total: $0</h3>
+
+        <button type="submit">Crear Reserva</button>
+        <button type="button" onclick="location.href='inicio.html'">Volver</button> <!-- Botón de Volver -->
+    </form>
+
+    <script>
+        async function cargarDepartamentos() {
+            const response = await fetch('/api/departamentos');
+            const departamentos = await response.json();
+            const select = document.getElementById('departamentoId');
+
+            departamentos.forEach(departamento => {
+                const option = document.createElement('option');
+                option.value = departamento.id;
+                option.textContent = departamento.name;
+                select.appendChild(option);
+            });
+        }
+
+        function calcularPrecioTotal() {
+            const fechaInicio = new Date(document.getElementById('fechaInicio').value);
+            const fechaFin = new Date(document.getElementById('fechaFin').value);
+            const valorPorNoche = parseFloat(document.getElementById('valorPorNoche').value);
+
+            if (fechaInicio && fechaFin && valorPorNoche > 0) {
+                const cantidadDias = Math.ceil((fechaFin - fechaInicio) / (1000 * 60 * 60 * 24));
+                const total = cantidadDias * valorPorNoche;
+                document.getElementById('precioTotal').textContent = 'Precio Total: $' + total;
+            }
+        }
+
+        document.getElementById('fechaInicio').addEventListener('change', calcularPrecioTotal);
+        document.getElementById('fechaFin').addEventListener('change', calcularPrecioTotal);
+        document.getElementById('valorPorNoche').addEventListener('input', calcularPrecioTotal);
+
+        document.getElementById('reserva-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const departamentoId = document.getElementById('departamentoId').value;
+            const fechaInicio = document.getElementById('fechaInicio').value;
+            const fechaFin = document.getElementById('fechaFin').value;
+            const valorPorNoche = document.getElementById('valorPorNoche').value;
+
+            const reserva = {
+                nombre,
+                departamentoId,
+                fechaInicio,
+                fechaFin,
+                valorPorNoche
+            };
+
+            const response = await fetch('/api/reservas', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(reserva)
+            });
+
+            if (response.ok) {
+                alert('Reserva creada exitosamente');
+                document.getElementById('reserva-form').reset();
+                document.getElementById('precioTotal').textContent = 'Precio Total: $0'; // Reiniciar el precio total
+
+                // Redirigir al inicio después de crear la reserva
+                setTimeout(() => {
+                    window.location.href = 'inicio.html'; // Cambia a la URL de tu página de inicio
+                }, 1000); // Esperar 1 segundo antes de redirigir
+            } else {
+                alert('Error al crear la reserva');
+            }
+        });
+
+        window.onload = cargarDepartamentos; // Cargar departamentos al inicio
+    </script>
+</body>
+</html>
