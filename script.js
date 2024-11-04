@@ -1,9 +1,3 @@
-// Función para seleccionar automáticamente el año y mes actuales
-function seleccionarFechaActual() {
-    const fechaActual = new Date();
-    document.getElementById('anioSelect').value = fechaActual.getFullYear();
-    document.getElementById('mesSelect').value = fechaActual.getMonth(); // Enero es 0, Diciembre es 11
-}
 
 // Función para cargar y mostrar reservas
 async function cargarReservas() {
